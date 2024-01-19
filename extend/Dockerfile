@@ -6,6 +6,7 @@ COPY ./composer.json composer.json
 COPY ./composer.lock composer.lock
 RUN mkdir -p /app/web/app/mu-plugins
 RUN mkdir -p /app/web/app/plugins
+RUN mkdir -p /app/web/app/themes
 RUN composer install --no-dev
 
 
@@ -46,8 +47,9 @@ ADD ./web /project/web
 # Bedrock built files
 COPY --from=builder /app/vendor /project/vendor
 COPY --from=builder /app/web/wp /project/web/wp
-COPY --from=builder /app/web/app/plugins/ /project/web/app/plugins/
 COPY --from=builder /app/web/app/mu-plugins/ /project/web/app/mu-plugins/
+COPY --from=builder /app/web/app/plugins/ /project/web/app/plugins/
+COPY --from=builder /app/web/app/themes/ /project/web/app/themes/
 
 # Update the permissions
 RUN chown -R www-data:www-data /project/ && \
