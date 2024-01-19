@@ -25,7 +25,6 @@ COPY wp-cli.yml /project/wp-cli.yml
 
 # Install NGINX + MySQL Client(For WPCLI) and add NGINX config
 RUN apk update && apk add -f nginx mysql-client
-COPY ./config/nginx/default.conf /etc/nginx/http.d/default.conf
 
 # Validate NGINX configurations
 RUN nginx -t
@@ -43,6 +42,9 @@ RUN ln -sf /dev/stderr /var/log/nginx/debug.log
 # Source files
 ADD ./config /project/config
 ADD ./web /project/web
+
+# Add link for the NGINX config
+RUN ln -sf /project/config/nginx/default.conf /etc/nginx/http.d/
 
 # Bedrock built files
 COPY --from=builder /app/vendor /project/vendor
