@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+    wordpress:
+        container_name: ${PROJECT:-project}_wp
+        image: ${PROJECT:-project}_wp:latest
+        build: .
+        restart: always
+        volumes:
+            - uploads:/project/web/app/uploads/
+        networks:
+            - backend
+        env_file: .env
+        security_opt:
+            - no-new-privileges
+
+    database:
+        container_name: ${PROJECT:-project}_db
+        image: mariadb:10.11
+        restart: always
+        environment:
+            MYSQL_DATABASE: ${DB_NAME:-database_name}
+            MYSQL_USER: ${DB_USER:-database_user}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-database_password}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-database_root_password}
+        volumes:
+            - database:/var/lib/mysql
+        networks:
+            - backend
+        security_opt:
+            - no-new-privileges
+
+networks:
+    backend:
+
+volumes:
+    uploads:
+    database:

@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+    wordpress:
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./logs:/var/log/nginx
+            - ./config:/project/config
+            - ./web:/project/web
+
+    phpmyadmin:
+        container_name: ${PROJECT:-project}_phpmyadmin
+        image: phpmyadmin:5.2
+        restart: unless-stopped
+        ports:
+            - ${PHPMYADMIN_PORT:-8082}:80
+        environment:
+            PMA_HOST: ${DB_HOST:-database}
+            PMA_USER: ${DB_USER:-database_user}
+            PMA_PASSWORD: ${DB_PASSWORD:-database_password}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-database_root_password}
+            UPLOAD_LIMIT: 64M
+        networks:
+            - backend
+        security_opt:
+            - no-new-privileges
+
